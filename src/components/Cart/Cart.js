@@ -86,7 +86,7 @@ const Cart = (props) => {
 
   const didSubmitModalContent = (
     <React.Fragment>
-      <p>Successfully sent order data! Your order number is {orderNumber}</p>
+      <p>Successfully sent order data! Your order number is {orderNumber.length > 0 && orderNumber}</p>
       <div className={classes.actions}>
         <button className={classes.button} onClick={props.onClose}>
           Close
@@ -99,7 +99,7 @@ const Cart = (props) => {
     <Modal onClose={props.onClose}>
       {!isSubmitting && !didSubmit && cartModalContent}
       {isSubmitting && isSubmittingModalContent}
-      {didSubmit && didSubmitModalContent && orderNumber}
+      {didSubmit && didSubmitModalContent}
     </Modal>
   );
 };
