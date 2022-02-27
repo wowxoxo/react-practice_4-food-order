@@ -13,12 +13,13 @@ const Cart = (props) => {
   const [didSubmit, setDidSubmit] = useState(false);
   const [orderNumber, setOrderNumber] = useState('')
   const cartCtx = useContext(CartContext);
+  const itemsFromCtx = cartCtx.items
+  const clearItems = cartCtx.clearCart
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const cartItemAddHandler = (item) => {
     cartCtx.addItem({ ...item, amount: 1 });
   };
-  
 
   const cartItemRemoveHandler = (id) => {
     cartCtx.removeItem(id);
@@ -31,21 +32,21 @@ const Cart = (props) => {
   const claerCtx = useCallback((response) => {
     setDidSubmit(true);
     setOrderNumber(response.name)
-    cartCtx.clearCart();
-  }, [cartCtx])
+    clearItems();
+  }, [clearItems])
   
   const sendRequestSubmitOreder= useCallback(async (userData) => {
-    const response = await TaskService.submitOrder(userData, cartCtx.items)
+    const response = await TaskService.submitOrder(userData, itemsFromCtx)
     console.log(response)
     claerCtx(response)
-  }, [claerCtx, cartCtx.items]);
+  }, [claerCtx, itemsFromCtx]);
 
   const [isSubmitting, , submitOrderHandler] = useFetch(sendRequestSubmitOreder);
 
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
-      {cartCtx.items.map((item) => (
+      {itemsFromCtx.map((item) => (
         <CartItem
           key={item.id}
           name={item.name}
