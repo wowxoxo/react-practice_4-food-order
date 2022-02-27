@@ -4,15 +4,19 @@ import Modal from "../UI/Modal";
 import React, { useContext, useState } from "react";
 import CartContext from "../../store/cart-context";
 import Checkout from "./Checkout";
+import TaskService from "../../Api/ApiService";
+import {useCallback} from 'react'
+import { useFetch } from "../Hooks/use-fetch";
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('')
   const cartCtx = useContext(CartContext);
+  const itemsFromCtx = cartCtx.items
+  const clearItems = cartCtx.clearCart
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
-
   const cartItemAddHandler = (item) => {
     cartCtx.addItem({ ...item, amount: 1 });
   };
@@ -25,26 +29,24 @@ const Cart = (props) => {
     setIsCheckout(true);
   };
 
-  const submitOrderHandler = async (userData) => {
-    setIsSubmitting(true);
-    await fetch(
-      "https://react-practice-a3a21-default-rtdb.firebaseio.com/meals-orders.json",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user: userData,
-          orderedItems: cartCtx.items
-        })
-      }
-    );
-    setIsSubmitting(false);
+  const claerCtx = useCallback((response) => {
     setDidSubmit(true);
-    cartCtx.clearCart();
-  };
+    setOrderNumber(response.name)
+    clearItems();
+  }, [clearItems])
+  
+  const sendRequestSubmitOreder= useCallback(async (userData) => {
+    const response = await TaskService.submitOrder(userData, itemsFromCtx)
+    console.log(response)
+    claerCtx(response)
+  }, [claerCtx, itemsFromCtx]);
+
+  const [isSubmitting, , submitOrderHandler] = useFetch(sendRequestSubmitOreder);
+
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
-      {cartCtx.items.map((item) => (
+      {itemsFromCtx.map((item) => (
         <CartItem
           key={item.id}
           name={item.name}
@@ -86,7 +88,7 @@ const Cart = (props) => {
 
   const didSubmitModalContent = (
     <React.Fragment>
-      <p>Successfully sent order data!</p>
+      <p>Successfully sent order data! Your order number is {orderNumber.length > 0 && orderNumber}</p>
       <div className={classes.actions}>
         <button className={classes.button} onClick={props.onClose}>
           Close

@@ -1,4 +1,4 @@
-export const isEmpty = (value) => value.trim() === "";
+export const isEmpty = (value) => !(value.trim() === "");
 
 export const isEmail = (value) => value.includes("@");
 

@@ -1,47 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Card from "../UI/Card";
 import classes from "./AvailableMeals.module.css";
 import MealItem from "./MealItem/MealItem";
+import TaskService from "../../Api/ApiService";
+import { useFetch } from "../Hooks/use-fetch";
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [httpError, setHttpError] = useState();
+
+  const transformAndSetMeals = useCallback((mealObj) => {
+    const loadedMeals = [];
+
+    for (const key in mealObj) {
+      loadedMeals.push({
+        ...mealObj[key],
+        id: key
+      });
+    }
+    setMeals(loadedMeals);
+  }, []);
+
+  const loadMeals = useCallback(async () => {
+    const response = await TaskService.getMeals();
+    transformAndSetMeals(response);
+  }, [transformAndSetMeals]);
+
+  const [isLoading, error, fetchMeals] = useFetch(loadMeals);
 
   useEffect(() => {
-    const fetchMeals = async () => {
-      const response = await fetch(
-        "https://react-practice-a3a21-default-rtdb.firebaseio.com/meals.json"
-      );
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-
-      const responseData = await response.json();
-
-      const loadedMeals = [];
-
-      for (const key in responseData) {
-        loadedMeals.push({
-          ...responseData[key],
-          id: key
-        });
-      }
-
-      setMeals(loadedMeals);
-      setIsLoading(false);
-    };
-
-    fetchMeals().catch((error) => {
-      setHttpError(error.message);
-    });
-
-    // try {
-    //   fetchMeals();
-    // } catch (error) {
-    //   setHttpError(error.message);
-    // }
-  }, []);
+    fetchMeals()
+  }, [fetchMeals]);
 
   const mealsList = meals.map((meal) => (
     <MealItem
@@ -61,10 +49,10 @@ const AvailableMeals = () => {
     );
   }
 
-  if (httpError) {
+  if (error) {
     return (
       <section className={classes.MealsError}>
-        <p>{httpError}</p>
+        <p>{error}</p>
       </section>
     );
   }
