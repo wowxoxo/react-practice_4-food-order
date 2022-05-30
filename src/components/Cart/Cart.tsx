@@ -2,10 +2,14 @@ import CartItem from "./CartItem";
 import classes from "./Cart.module.css";
 import Modal from "../UI/Modal";
 import React, { useContext, useState } from "react";
-import CartContext from "../../store/cart-context";
+import CartContext, { CartItemI } from "../../store/cart-context";
 import Checkout from "./Checkout";
 
-const Cart = (props) => {
+export interface CartProps {
+  onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const Cart: React.FC<CartProps> = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
@@ -13,11 +17,11 @@ const Cart = (props) => {
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
-  const cartItemAddHandler = (item) => {
+  const cartItemAddHandler = (item: CartItemI) => {
     cartCtx.addItem({ ...item, amount: 1 });
   };
 
-  const cartItemRemoveHandler = (id) => {
+  const cartItemRemoveHandler = (id: CartItemI["id"]) => {
     cartCtx.removeItem(id);
   };
 
@@ -25,7 +29,8 @@ const Cart = (props) => {
     setIsCheckout(true);
   };
 
-  const submitOrderHandler = async (userData) => {
+  // TODO: remove any
+  const submitOrderHandler = async (userData: any) => {
     setIsSubmitting(true);
     await fetch(
       "https://react-practice-a3a21-default-rtdb.firebaseio.com/meals-orders.json",

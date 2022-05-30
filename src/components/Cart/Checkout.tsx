@@ -1,8 +1,23 @@
+import React from "react";
 import { useRef, useState } from "react";
 import { isEmail, isEmpty, isSixChars } from "../../utils/validators";
 import classes from "./Checkout.module.css";
 
-const Checkout = (props) => {
+interface CheckoutBody {
+  // name: string,
+  // email: string,
+  // city: string
+  // street: string,
+  // postalCode: string
+  [key: string]: string | undefined;
+}
+
+interface CheckoutProps {
+  onConfirm: (body: CheckoutBody) => void;
+  onCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const Checkout = (props: CheckoutProps) => {
   const [formInputsValidity, setFormInputsValidity] = useState({
     name: true,
     email: true,
@@ -11,20 +26,20 @@ const Checkout = (props) => {
     postalCode: true
   });
 
-  const nameInputRef = useRef();
-  const emailInputRef = useRef();
-  const cityInputRef = useRef();
-  const streetInputRef = useRef();
-  const postalCodeInputRef = useRef();
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const cityInputRef = useRef<HTMLInputElement>(null);
+  const streetInputRef = useRef<HTMLInputElement>(null);
+  const postalCodeInputRef = useRef<HTMLInputElement>(null);
 
-  const submitHandler = (event) => {
+  const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const enteredName = nameInputRef.current.value;
-    const enteredEmail = emailInputRef.current.value;
-    const enteredCity = cityInputRef.current.value;
-    const enteredStreet = streetInputRef.current.value;
-    const enteredPostalCode = postalCodeInputRef.current.value;
+    const enteredName = nameInputRef.current?.value;
+    const enteredEmail = emailInputRef.current?.value;
+    const enteredCity = cityInputRef.current?.value;
+    const enteredStreet = streetInputRef.current?.value;
+    const enteredPostalCode = postalCodeInputRef.current?.value;
 
     const enteredNameIsValid = !isEmpty(enteredName);
     const enteredEmailIsValid = isEmail(enteredEmail);
