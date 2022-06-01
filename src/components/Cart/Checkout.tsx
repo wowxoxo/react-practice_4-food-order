@@ -3,13 +3,13 @@ import { useRef, useState } from "react";
 import { isEmail, isEmpty, isSixChars } from "../../utils/validators";
 import classes from "./Checkout.module.css";
 
-interface CheckoutBody {
-  // name: string,
-  // email: string,
-  // city: string
-  // street: string,
-  // postalCode: string
-  [key: string]: string | undefined;
+export interface CheckoutBody {
+  name: string | null,
+  email: string | null,
+  city: string | null,
+  street: string | null,
+  postalCode: string | null,
+  // [key: string]: string | undefined;
 }
 
 interface CheckoutProps {
@@ -66,13 +66,34 @@ const Checkout = (props: CheckoutProps) => {
       return;
     }
 
+    // if (enteredName && enteredEmail && enteredCity && enteredStreet && enteredPostalCode) { 
+    //   props.onConfirm({
+    //     name: enteredName,
+    //     email: enteredEmail,
+    //     city: enteredCity,
+    //     street: enteredStreet,
+    //     postalCode: enteredPostalCode
+    //   });
+    // }
+
+    // props.onConfirm({
+    //   name: enteredName || "",
+    //   email: enteredEmail || "",
+    //   city: enteredCity || "",
+    //   street: enteredStreet || "",
+    //   postalCode: enteredPostalCode || "",
+    // });
+
+
     props.onConfirm({
-      name: enteredName,
-      email: enteredEmail,
-      city: enteredCity,
-      street: enteredStreet,
-      postalCode: enteredPostalCode
+      name: enteredName ? enteredName : null,
+      email: enteredEmail || null,
+      city: enteredCity || null,
+      street: enteredStreet || null,
+      postalCode: enteredPostalCode || null,
     });
+
+    
   };
 
   const nameControlClasses = `${classes.control} ${

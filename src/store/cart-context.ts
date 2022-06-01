@@ -3,12 +3,15 @@ import React from "react";
 export interface CartItemI {
   id: string;
   name: string;
-  desc: string;
   amount: number;
   price: number;
 }
 
-interface CartContextInterface {
+export interface CartItemWithDescI extends CartItemI {
+  desc: string;
+}
+
+export interface CartContextInterface {
   items: Array<CartItemI>;
   totalAmount: number;
   addItem: (item: CartItemI) => void;
@@ -23,5 +26,7 @@ const CartContext = React.createContext<CartContextInterface>({
   removeItem: (id) => {},
   clearCart: () => {}
 });
+
+// export default CartContext.Provider
 
 export default CartContext;

@@ -3,7 +3,7 @@ import classes from "./Cart.module.css";
 import Modal from "../UI/Modal";
 import React, { useContext, useState } from "react";
 import CartContext, { CartItemI } from "../../store/cart-context";
-import Checkout from "./Checkout";
+import Checkout, { CheckoutBody } from "./Checkout";
 
 export interface CartProps {
   onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -18,7 +18,8 @@ const Cart: React.FC<CartProps> = (props) => {
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
   const cartItemAddHandler = (item: CartItemI) => {
-    cartCtx.addItem({ ...item, amount: 1 });
+    cartCtx.addItem({ ...item, amount: 1 }); // technically item can contain a lot of fields
+    // cartCtx.addItem({ id, name, price, amount: 1 });
   };
 
   const cartItemRemoveHandler = (id: CartItemI["id"]) => {
@@ -29,8 +30,7 @@ const Cart: React.FC<CartProps> = (props) => {
     setIsCheckout(true);
   };
 
-  // TODO: remove any
-  const submitOrderHandler = async (userData: any) => {
+  const submitOrderHandler = async (userData: CheckoutBody ) => {
     setIsSubmitting(true);
     await fetch(
       "https://react-practice-a3a21-default-rtdb.firebaseio.com/meals-orders.json",

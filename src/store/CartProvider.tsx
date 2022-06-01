@@ -1,12 +1,36 @@
 import { useReducer } from "react";
-import CartContext from "./cart-context.ts";
+import CartContext, { CartItemI } from "./cart-context";
 
-const defaultState = {
+type State = {
+  items: CartItemI[],
+  totalAmount: number
+}
+
+const defaultState: State = {
   items: [],
   totalAmount: 0
 };
 
-const cartReducer = (state, action) => {
+// try {
+//   // fetch
+//   new Error('Amds')
+//   // Mongo.
+// } catch (error) {
+//   console.log(error.message)
+//   console.log((error as Error).message)
+// }
+
+enum ActionType {
+  ADD = "ADD",
+  REMOVE = "REMOVE",
+  CLEAR = "CLEAR"
+}
+// type ACTION = { type: ActionType, item: CartItemI, id: string }
+type ACTION = { type: ActionType.ADD, item: CartItemI } | { type: ActionType.REMOVE, id: string, } | { type: ActionType.CLEAR}
+// type ACTION = { type: ActionType, payload: CartItemI | string }
+
+// const cartReducer = (state: typeof defaultState, action) => {
+const cartReducer = (state: typeof defaultState, action: ACTION) => {
   if (action.type === "ADD") {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
@@ -62,19 +86,19 @@ const cartReducer = (state, action) => {
   return defaultState;
 };
 
-const CartProvider = (props) => {
+const CartProvider = (props: { children: React.ReactNode }) => {
   const [cartState, dispatchCartAction] = useReducer(cartReducer, defaultState);
 
-  const addItemToCartHandler = (item) => {
-    dispatchCartAction({ type: "ADD", item });
+  const addItemToCartHandler = (item: CartItemI) => {
+    dispatchCartAction({ type: ActionType.ADD, item });
   };
 
-  const removeItemFromCartHandler = (id) => {
-    dispatchCartAction({ type: "REMOVE", id });
+  const removeItemFromCartHandler = (id: CartItemI["id"]) => {
+    dispatchCartAction({ type: ActionType.REMOVE, id });
   };
 
   const clearCartHandler = () => {
-    dispatchCartAction({ type: "CLEAR" });
+    dispatchCartAction({ type: ActionType.CLEAR });
   };
 
   const cartContext = {
@@ -90,6 +114,7 @@ const CartProvider = (props) => {
       {props.children}
     </CartContext.Provider>
   );
+
 };
 
 export default CartProvider;
