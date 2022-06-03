@@ -6,7 +6,7 @@ import CartContext, { CartItemI } from "../../store/cart-context";
 import Checkout, { CheckoutBody } from "./Checkout";
 
 export interface CartProps {
-  onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClose: (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
 }
 
 const Cart: React.FC<CartProps> = (props) => {

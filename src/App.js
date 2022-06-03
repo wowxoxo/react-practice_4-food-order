@@ -3,6 +3,7 @@ import Cart from "./components/Cart/Cart.tsx";
 import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
 import CartProvider from "./store/CartProvider.tsx";
+// import logo from './assets/meals.jpg'
 
 function App() {
   const [cartIsShown, setCartIsShown] = useState(false);
@@ -20,6 +21,7 @@ function App() {
       {cartIsShown && <Cart onClose={hideCartHandler} />}
       <Header onShowCart={showCartHandler} />
       <main>
+        {/* <img src={logo} /> */}
         <Meals />
       </main>
     </CartProvider>
